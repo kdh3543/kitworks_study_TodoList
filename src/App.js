@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { Fragment, useState } from 'react';
 
 function App() {
   const [todos, setTodos] = useState([]);
-  const [todoVal, setTodoVal] = useState("");
-  const [error, setError] = useState("");
+  const [todoVal, setTodoVal] = useState('');
+  const [error, setError] = useState('');
 
   const setTodo = (e) => {
     const { value } = e.target;
@@ -12,15 +12,15 @@ function App() {
 
   const onAddTodo = () => {
     if (!todoVal) {
-      setError("There is nothing Todo");
+      setError('There is nothing Todo');
       return;
     }
-    setError("");
+    setError('');
     setTodos((prev) => [
       { content: todoVal, checked: false, isEdit: false, editContent: todoVal },
       ...prev,
     ]);
-    setTodoVal("");
+    setTodoVal('');
   };
 
   const onChangeTodo = (index, type) => {
@@ -28,12 +28,12 @@ function App() {
       prev.map(({ content, isEdit, checked, ...rest }, i) => {
         return {
           ...rest,
-          checked: type === "check" && i === index ? !checked : checked,
-          isEdit: type === "edit" && i === index ? !isEdit : isEdit,
+          checked: type === 'check' && i === index ? !checked : checked,
+          isEdit: type === 'edit' && i === index ? !isEdit : isEdit,
           content,
           editContent: content,
         };
-      })
+      }),
     );
   };
 
@@ -50,7 +50,7 @@ function App() {
           content: editContent,
           editContent,
         };
-      })
+      }),
     );
   };
 
@@ -62,7 +62,7 @@ function App() {
           ...rest,
           editContent: i === index ? (editContent = value) : editContent,
         };
-      })
+      }),
     );
   };
 
@@ -77,7 +77,7 @@ function App() {
             placeholder="INPUT TODO"
             value={todoVal}
             onChange={(e) => setTodo(e)}
-            onKeyDown={(e) => e.key === "Enter" && onAddTodo()}
+            onKeyDown={(e) => e.key === 'Enter' && onAddTodo()}
           />
           <button
             type="submit"
@@ -96,37 +96,35 @@ function App() {
           <span className="w-[10%]">Edit</span>
         </div>
         {todos.map(({ checked, content, isEdit, editContent }, index) => (
-          <div
-            className="mt-5 flex justify-between text-center rounded-sm py-1 items-center"
-            key={index}
-          >
+          <div className="mt-5 w-[100%] flex text-center rounded-sm py-1 items-center" key={index}>
             <span className="w-[5%] text-xl">{index + 1}</span>
-            {isEdit ? (
+            <div className="w-[65%]">
+              {isEdit ? (
+                <input
+                  type="text"
+                  defaultValue={editContent}
+                  className="border-gray-500 border-2 px-2 rounded-md"
+                  onChange={(e) => onUpdateContent(e, index)}
+                />
+              ) : (
+                <span
+                  className={` text-xl
+                ${checked && 'line-through'}`}
+                >
+                  {content}
+                </span>
+              )}
+            </div>
+
+            <div className="w-[10%] flex items-center justify-center">
               <input
-                type="text"
-                defaultValue={editContent}
-                className="border-gray-500 border-2 px-2 rounded-md w-[65%]"
-                onChange={(e) => onUpdateContent(e, index)}
+                type="checkbox"
+                className={`w-[20px] h-[20px] ${isEdit ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                onChange={() => onChangeTodo(index, 'check')}
+                checked={checked}
+                disabled={isEdit}
               />
-            ) : (
-              <span
-                className={`w-[65%] text-xl
-                ${checked && "line-through"}`}
-              >
-                {content}
-              </span>
-            )}
-
-            <input
-              type="checkbox"
-              className={`w-[20px] h-[20px] ${
-                isEdit ? "cursor-not-allowed" : "cursor-pointer"
-              }`}
-              onChange={() => onChangeTodo(index, "check")}
-              checked={checked}
-              disabled={isEdit}
-            />
-
+            </div>
             <div className="w-[10%]">
               <button
                 className="bg-red-500 h-6 w-6 rounded-full text-white active:bg-red-300 font-semibold"
@@ -135,31 +133,31 @@ function App() {
                 X
               </button>
             </div>
-            {isEdit ? (
-              <div className="w-[10%]">
+            <div className="w-[10%]">
+              {isEdit ? (
+                <Fragment>
+                  <button
+                    className={`${'bg-blue-500 active:bg-blue-300'} py-1 px-2 rounded-md text-white font-semibold`}
+                    onClick={() => onUpdateTodo(index)}
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    className={`${'bg-red-500 active:bg-red-300'} py-1 px-2 rounded-md text-white font-semibold mt-2`}
+                    onClick={() => onChangeTodo(index, 'edit')}
+                  >
+                    Cancel
+                  </button>
+                </Fragment>
+              ) : (
                 <button
-                  className={`${"bg-blue-500 active:bg-blue-300"} py-1 px-2 rounded-md text-white font-semibold`}
-                  onClick={() => onUpdateTodo(index)}
-                >
-                  Confirm
-                </button>
-                <button
-                  className={`${"bg-red-500 active:bg-red-300"} py-1 px-2 rounded-md text-white font-semibold mt-2`}
-                  onClick={() => onChangeTodo(index, "edit")}
-                >
-                  Cancel
-                </button>
-              </div>
-            ) : (
-              <div className="w-[10%]">
-                <button
-                  className={`${"bg-blue-500 active:bg-blue-300"} py-1 px-2 rounded-md text-white font-semibold`}
-                  onClick={() => onChangeTodo(index, "edit")}
+                  className={`${'bg-blue-500 active:bg-blue-300'} py-1 px-2 rounded-md text-white font-semibold`}
+                  onClick={() => onChangeTodo(index, 'edit')}
                 >
                   Edit
                 </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         ))}
       </div>
