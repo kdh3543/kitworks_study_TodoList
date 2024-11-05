@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function App() {
   const [todos, setTodos] = useState([]);
   const [todoVal, setTodoVal] = useState("");
-
   const [error, setError] = useState("");
 
   const setTodo = (e) => {
@@ -18,18 +17,21 @@ function App() {
     }
     setError("");
     setTodos((prev) => [
+      { content: todoVal, checked: false, isEdit: false, editContent: todoVal },
       ...prev,
-      { content: todoVal, checked: false, isEdit: false },
     ]);
     setTodoVal("");
   };
 
-  const onCheckTodo = (index, type) => {
+  const onChangeTodo = (index, type) => {
     setTodos((prev) =>
-      prev.map(({ checked, ...rest }, i) => {
+      prev.map(({ content, isEdit, checked, ...rest }, i) => {
         return {
           ...rest,
-          checked: i === index ? !checked : checked,
+          checked: type === "check" && i === index ? !checked : checked,
+          isEdit: type === "edit" && i === index ? !isEdit : isEdit,
+          content,
+          editContent: content,
         };
       })
     );
@@ -39,12 +41,26 @@ function App() {
     setTodos((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const onChangeTodo = (index) => {
+  const onUpdateTodo = (index) => {
     setTodos((prev) =>
-      prev.map(({ isEdit, ...rest }, i) => {
+      prev.map(({ content, editContent, isEdit, ...rest }, i) => {
         return {
           ...rest,
           isEdit: i === index ? !isEdit : isEdit,
+          content: editContent,
+          editContent,
+        };
+      })
+    );
+  };
+
+  const onUpdateContent = (e, index) => {
+    const { value } = e.target;
+    setTodos((prev) =>
+      prev.map(({ editContent, ...rest }, i) => {
+        return {
+          ...rest,
+          editContent: i === index ? (editContent = value) : editContent,
         };
       })
     );
@@ -61,6 +77,7 @@ function App() {
             placeholder="INPUT TODO"
             value={todoVal}
             onChange={(e) => setTodo(e)}
+            onKeyDown={(e) => e.key === "Enter" && onAddTodo()}
           />
           <button
             type="submit"
@@ -78,22 +95,36 @@ function App() {
           <span className="w-[10%]">Delete</span>
           <span className="w-[10%]">Edit</span>
         </div>
-        {todos.map(({ checked, content, isEdit }, index) => (
+        {todos.map(({ checked, content, isEdit, editContent }, index) => (
           <div
             className="mt-5 flex justify-between text-center rounded-sm py-1 items-center"
             key={index}
           >
             <span className="w-[5%] text-xl">{index + 1}</span>
-            <span
-              className={`w-[65%] text-xl
+            {isEdit ? (
+              <input
+                type="text"
+                defaultValue={editContent}
+                className="border-gray-500 border-2 px-2 rounded-md w-[65%]"
+                onChange={(e) => onUpdateContent(e, index)}
+              />
+            ) : (
+              <span
+                className={`w-[65%] text-xl
                 ${checked && "line-through"}`}
-            >
-              {content}
-            </span>
+              >
+                {content}
+              </span>
+            )}
+
             <input
               type="checkbox"
-              className="h-6 w-[10%] rounded-full cursor-pointer border-none"
-              onChange={() => onCheckTodo(index)}
+              className={`w-[20px] h-[20px] ${
+                isEdit ? "cursor-not-allowed" : "cursor-pointer"
+              }`}
+              onChange={() => onChangeTodo(index, "check")}
+              checked={checked}
+              disabled={isEdit}
             />
 
             <div className="w-[10%]">
@@ -104,18 +135,31 @@ function App() {
                 X
               </button>
             </div>
-            <div className="w-[10%]">
-              <button
-                className={`${
-                  isEdit
-                    ? "bg-red-500 active:bg-red-300"
-                    : "bg-blue-500 active:bg-blue-300"
-                } py-1 px-2 rounded-md text-white  font-semibold`}
-                onClick={() => onChangeTodo(index)}
-              >
-                {isEdit ? "Cancel" : "Change"}
-              </button>
-            </div>
+            {isEdit ? (
+              <div className="w-[10%]">
+                <button
+                  className={`${"bg-blue-500 active:bg-blue-300"} py-1 px-2 rounded-md text-white font-semibold`}
+                  onClick={() => onUpdateTodo(index)}
+                >
+                  Confirm
+                </button>
+                <button
+                  className={`${"bg-red-500 active:bg-red-300"} py-1 px-2 rounded-md text-white font-semibold mt-2`}
+                  onClick={() => onChangeTodo(index, "edit")}
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <div className="w-[10%]">
+                <button
+                  className={`${"bg-blue-500 active:bg-blue-300"} py-1 px-2 rounded-md text-white font-semibold`}
+                  onClick={() => onChangeTodo(index, "edit")}
+                >
+                  Edit
+                </button>
+              </div>
+            )}
           </div>
         ))}
       </div>
