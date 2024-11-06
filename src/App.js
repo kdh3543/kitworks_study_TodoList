@@ -107,12 +107,7 @@ function App() {
                   onChange={(e) => onUpdateContent(e, index)}
                 />
               ) : (
-                <span
-                  className={` text-xl
-                ${checked && 'line-through'}`}
-                >
-                  {content}
-                </span>
+                <span className={` text-xl ${checked && 'line-through'}`}>{content}</span>
               )}
             </div>
 
@@ -137,13 +132,13 @@ function App() {
               {isEdit ? (
                 <Fragment>
                   <button
-                    className={`${'bg-blue-500 active:bg-blue-300'} py-1 px-2 rounded-md text-white font-semibold`}
+                    className={`bg-blue-500 active:bg-blue-300 py-1 px-2 rounded-md text-white font-semibold`}
                     onClick={() => onUpdateTodo(index)}
                   >
                     Confirm
                   </button>
                   <button
-                    className={`${'bg-red-500 active:bg-red-300'} py-1 px-2 rounded-md text-white font-semibold mt-2`}
+                    className={`bg-red-500 active:bg-red-300 py-1 px-2 rounded-md text-white font-semibold mt-2`}
                     onClick={() => onChangeTodo(index, 'edit')}
                   >
                     Cancel
@@ -151,7 +146,7 @@ function App() {
                 </Fragment>
               ) : (
                 <button
-                  className={`${'bg-blue-500 active:bg-blue-300'} py-1 px-2 rounded-md text-white font-semibold`}
+                  className={`bg-blue-500 active:bg-blue-300 py-1 px-2 rounded-md text-white font-semibold`}
                   onClick={() => onChangeTodo(index, 'edit')}
                 >
                   Edit
