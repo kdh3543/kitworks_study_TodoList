@@ -1,11 +1,22 @@
-import { Fragment, useState } from 'react';
+import React, { Fragment, useState } from 'react';
+import { FaCirclePlus } from 'react-icons/fa6';
+import { IoTrash } from 'react-icons/io5';
+import { RiCheckboxBlankCircleLine, RiCheckboxCircleFill } from 'react-icons/ri';
+import { MdOutlineModeEditOutline } from 'react-icons/md';
+
+interface TodosType {
+  content: string;
+  checked: boolean;
+  isEdit: boolean;
+  editContent: string;
+}
 
 function App() {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState<TodosType[]>([]);
   const [todoVal, setTodoVal] = useState('');
   const [error, setError] = useState('');
 
-  const setTodo = (e) => {
+  const setTodo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setTodoVal(value);
   };
@@ -23,7 +34,7 @@ function App() {
     setTodoVal('');
   };
 
-  const onChangeTodo = (index, type) => {
+  const onChangeTodo = (index: number, type: string) => {
     setTodos((prev) =>
       prev.map(({ content, isEdit, checked, ...rest }, i) => {
         return {
@@ -37,11 +48,11 @@ function App() {
     );
   };
 
-  const onDeleteTodo = (index) => {
+  const onDeleteTodo = (index: number) => {
     setTodos((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const onUpdateTodo = (index) => {
+  const onUpdateTodo = (index: number) => {
     setTodos((prev) =>
       prev.map(({ content, editContent, isEdit, ...rest }, i) => {
         return {
@@ -54,7 +65,7 @@ function App() {
     );
   };
 
-  const onUpdateContent = (e, index) => {
+  const onUpdateContent = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const { value } = e.target;
     setTodos((prev) =>
       prev.map(({ editContent, ...rest }, i) => {
@@ -67,38 +78,37 @@ function App() {
   };
 
   return (
-    <div className="w-[80%] h-[100%] m-auto ">
+    <div className="w-[50%] m-auto border-2 bg-white p-5 mt-40 rounded-md shadow-lg shadow-[#537c9b] relative">
       <header className="mt-10 text-3xl font-semibold text-center">TODO</header>
       <div>
         <div className="mt-10 flex justify-between">
           <input
             type="text"
-            className="border-2 border-gray-500 w-[85%] rounded-md px-2"
+            className="border-2 border-gray-500 w-[100%] rounded-md px-2"
             placeholder="INPUT TODO"
             value={todoVal}
             onChange={(e) => setTodo(e)}
             onKeyDown={(e) => e.key === 'Enter' && onAddTodo()}
           />
-          <button
-            type="submit"
-            className="bg-green-500 px-2 py-1 rounded-md w-[10%] text-white font-semibold active:bg-green-300"
-            onClick={onAddTodo}
-          >
-            ADD
-          </button>
         </div>
         <p className="text-red-500">{error}</p>
-        <div className="my-10 flex justify-between text-center font-semibold border-b-black border-b-2 py-1 text-xl">
-          <span className="w-[5%]">No.</span>
-          <span className="w-[65%]">Content</span>
-          <span className="w-[10%]">Check</span>
-          <span className="w-[10%]">Delete</span>
-          <span className="w-[10%]">Edit</span>
-        </div>
+        <hr className="border-1 border-black my-5" />
         {todos.map(({ checked, content, isEdit, editContent }, index) => (
           <div className="mt-5 w-[100%] flex text-center rounded-sm py-1 items-center" key={index}>
-            <span className="w-[5%] text-xl">{index + 1}</span>
-            <div className="w-[65%]">
+            <div className="w-[10%] flex items-center justify-center">
+              {checked ? (
+                <RiCheckboxCircleFill
+                  className="w-[30px] h-[30px] text-customerPurple cursor-pointer"
+                  onClick={() => onChangeTodo(index, 'check')}
+                />
+              ) : (
+                <RiCheckboxBlankCircleLine
+                  className="w-[30px] h-[30px] text-customerPurple cursor-pointer"
+                  onClick={() => onChangeTodo(index, 'check')}
+                />
+              )}
+            </div>
+            <div className="w-[70%]">
               {isEdit ? (
                 <input
                   type="text"
@@ -112,21 +122,10 @@ function App() {
             </div>
 
             <div className="w-[10%] flex items-center justify-center">
-              <input
-                type="checkbox"
-                className={`w-[20px] h-[20px] ${isEdit ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                onChange={() => onChangeTodo(index, 'check')}
-                checked={checked}
-                disabled={isEdit}
-              />
-            </div>
-            <div className="w-[10%]">
-              <button
-                className="bg-red-500 h-6 w-6 rounded-full text-white active:bg-red-300 font-semibold"
+              <IoTrash
+                className="text-red-400 cursor-pointer w-[30px] h-[30px]"
                 onClick={() => onDeleteTodo(index)}
-              >
-                X
-              </button>
+              />
             </div>
             <div className="w-[10%]">
               {isEdit ? (
@@ -145,16 +144,26 @@ function App() {
                   </button>
                 </Fragment>
               ) : (
-                <button
-                  className={`bg-blue-500 active:bg-blue-300 py-1 px-2 rounded-md text-white font-semibold`}
+                // <button
+                //   className={`bg-blue-500 active:bg-blue-300 py-1 px-2 rounded-md text-white font-semibold`}
+                //   onClick={() => onChangeTodo(index, 'edit')}
+                // >
+                //   Edit
+                // </button>
+                <MdOutlineModeEditOutline
                   onClick={() => onChangeTodo(index, 'edit')}
-                >
-                  Edit
-                </button>
+                  className="cursor-pointer w-[30px] h-[30px]"
+                />
               )}
             </div>
           </div>
         ))}
+      </div>
+      <div className="flex justify-center mt-5 relative">
+        <FaCirclePlus
+          className="bg-white rounded-full text-4xl cursor-pointer text-customerPurple active:text-customerPurple-60"
+          onClick={onAddTodo}
+        />
       </div>
     </div>
   );
