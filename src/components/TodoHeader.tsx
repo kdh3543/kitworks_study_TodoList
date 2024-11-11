@@ -20,6 +20,7 @@ export default function TodoHeader() {
       setError('there is nothing!');
       return;
     }
+    setError('');
     onAddTodo(todoVal);
     setTodoVal('');
   };
