@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaCirclePlus } from 'react-icons/fa6';
 import useTodoValStore from '../store/useTodoValStore';
 import useTodosStore from '../store/useTodosStore';
 
-export default function TodoHeader({ error }: { error: string }) {
+export default function TodoHeader() {
+  const [error, setError] = useState('');
+
   const { todoVal, setTodoVal } = useTodoValStore();
   const { onAddTodo } = useTodosStore();
   const now = new Date();
@@ -14,6 +16,10 @@ export default function TodoHeader({ error }: { error: string }) {
   };
 
   const onAddTodoHandler = () => {
+    if (!todoVal) {
+      setError('there is nothing!');
+      return;
+    }
     onAddTodo(todoVal);
     setTodoVal('');
   };
