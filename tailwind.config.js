@@ -16,13 +16,17 @@ function generateColors(hex, opacities) {
 }
 
 module.exports = {
-  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       colors: {
         customerPurple: {
-          DEFAULT: '#C896FF',
-          ...generateColors('#C896FF', [20, 40, 60, 80]),
+          DEFAULT: "#C896FF",
+          ...generateColors("#C896FF", [20, 40, 60, 80]),
+        },
+        customBlue: {
+          DEFAULT: "#c8dceb",
+          ...generateColors("#c8dceb", [20, 40, 60, 80]),
         },
       },
     },
