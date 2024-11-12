@@ -6,9 +6,11 @@ import useTodosStore from '../store/useTodosStore';
 export default function TodoHeader() {
   const [error, setError] = useState('');
 
-  const { todoVal, setTodoVal } = useTodoValStore();
+  const { todoVal, setTodoVal, setFilterVal } = useTodoValStore();
   const { onAddTodo } = useTodosStore();
   const now = new Date();
+
+  const optionList = ['All', 'Complete', 'Not Complete'];
 
   const setTodo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -24,11 +26,25 @@ export default function TodoHeader() {
     onAddTodo(todoVal);
     setTodoVal('');
   };
+
   return (
     <div className="h-[25%]">
-      <span className="text-xl font-semibold">
-        {now.getMonth() + 1}. {now.getDate()}
-      </span>
+      <div className="flex justify-between">
+        <span className="text-xl font-semibold">
+          {now.getMonth() + 1}. {now.getDate()}
+        </span>
+        <select
+          className="border-customBlue border-2 ml-2 rounded-md px-1 font-semibold cursor-pointer"
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilterVal(e.target.value)}
+        >
+          {optionList.map((option, i) => (
+            <option value={option} key={i} className="cursor-pointer font-semibold">
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="mt-5 text-3xl font-semibold text-center">
         <span>TO-DO</span>
       </div>

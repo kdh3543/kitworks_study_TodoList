@@ -46,7 +46,7 @@ const useTodosStore = create<{
     })),
   onDeleteCompleted: () =>
     set((state) => ({
-      todos: state.todos.filter((v) => !v.checked),
+      todos: state.todos.filter((todo) => !todo.checked),
     })),
   onChangeTodo: (index: number, type: string) =>
     set((state) => ({
