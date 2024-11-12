@@ -30,7 +30,7 @@ const useTodosStore = create<{
         return {
           ...rest,
           isEdit: i === index ? !isEdit : isEdit,
-          content,
+          content: editContent,
           editContent,
         };
       }),
