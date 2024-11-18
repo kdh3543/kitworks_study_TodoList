@@ -1,22 +1,29 @@
-import { create } from 'zustand';
-import { TodosType } from '../types';
+import { create } from "zustand";
+import { TodosType } from "../types";
 
-const useTodosStore = create<{
+interface todosPropsType {
   todos: TodosType[];
   setTodos: (value: TodosType[]) => void;
   onAddTodo: (todoVal: string) => void;
   onDeleteTodo: (index: number) => void;
   onUpdateTodo: (index: number) => void;
-  onUpdateContent: (e: React.ChangeEvent<HTMLInputElement>, index: number) => void;
+  onUpdateContent: (e: string, index: number) => void;
   onDeleteCompleted: () => void;
   onChangeTodo: (index: number, type: string) => void;
-}>((set) => ({
+}
+
+const useTodosStore = create<todosPropsType>((set) => ({
   todos: [],
   setTodos: (value: TodosType[]) => set({ todos: value }),
   onAddTodo: (todoVal: string) =>
     set((state) => ({
       todos: [
-        { content: todoVal, checked: false, isEdit: false, editContent: todoVal },
+        {
+          content: todoVal,
+          checked: false,
+          isEdit: false,
+          editContent: todoVal,
+        },
         ...state.todos,
       ],
     })),
@@ -35,12 +42,12 @@ const useTodosStore = create<{
         };
       }),
     })),
-  onUpdateContent: (e: React.ChangeEvent<HTMLInputElement>, index: number) =>
+  onUpdateContent: (val: string, index: number) =>
     set((state) => ({
       todos: state.todos.map(({ editContent, ...rest }, i) => {
         return {
           ...rest,
-          editContent: i === index ? (editContent = e.target.value) : editContent,
+          editContent: i === index ? (editContent = val) : editContent,
         };
       }),
     })),
@@ -48,18 +55,21 @@ const useTodosStore = create<{
     set((state) => ({
       todos: state.todos.filter((todo) => !todo.checked),
     })),
-  onChangeTodo: (index: number, type: string) =>
+  onChangeTodo: (index: number, type: string) => {
     set((state) => ({
-      todos: state.todos.map(({ checked, isEdit, content, editContent, ...rest }, i) => {
-        return {
-          ...rest,
-          checked: type === 'check' && i === index ? !checked : checked,
-          isEdit: type === 'edit' && i === index ? !isEdit : isEdit,
-          content,
-          editContent,
-        };
-      }),
-    })),
+      todos: state.todos
+        .map(({ checked, isEdit, content, editContent, ...rest }, i) => {
+          return {
+            ...rest,
+            checked: type === "check" && i === index ? !checked : checked,
+            isEdit: type === "edit" && i === index ? !isEdit : isEdit,
+            content,
+            editContent,
+          };
+        })
+        .sort((a: any, b: any) => a.checked - b.checked),
+    }));
+  },
 }));
 
 export default useTodosStore;
