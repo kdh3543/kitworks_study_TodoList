@@ -1,0 +1,21 @@
+[debug] [2024-11-18T13:08:30.060Z] ----------------------------------------------------------------------
+[debug] [2024-11-18T13:08:30.063Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\rlaeh\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2024-11-18T13:08:30.063Z] CLI Version:   13.25.0
+[debug] [2024-11-18T13:08:30.063Z] Platform:      win32
+[debug] [2024-11-18T13:08:30.063Z] Node Version:  v18.18.0
+[debug] [2024-11-18T13:08:30.065Z] Time:          Mon Nov 18 2024 22:08:30 GMT+0900 (대한민국 표준시)
+[debug] [2024-11-18T13:08:30.066Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-11-18T13:08:30.074Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-11-18T13:08:30.075Z] > authorizing via signed-in user (monkey3543@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\rlaeh\OneDrive\바탕 화면\workspace\kitworks_study_TodoList
+

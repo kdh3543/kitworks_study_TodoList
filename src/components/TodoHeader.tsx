@@ -1,16 +1,19 @@
-import React, { useState } from "react";
-import { FaCirclePlus } from "react-icons/fa6";
-import useTodoValStore from "../store/useTodoValStore";
-import useTodosStore from "../store/useTodosStore";
+import React, { useState } from 'react';
+import { FaCirclePlus } from 'react-icons/fa6';
+import useTodoValStore from '../store/useTodoValStore';
+import useTodosStore from '../store/useTodosStore';
+
+import useFirebase from '../hooks/useFirebase';
 
 export default function TodoHeader() {
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const { todoVal, setTodoVal, setFilterVal } = useTodoValStore();
   const { onAddTodo } = useTodosStore();
   const now = new Date();
+  const { addTodo } = useFirebase();
 
-  const optionList = ["All", "Complete", "Not Complete"];
+  const optionList = ['All', 'Complete', 'Not Complete'];
 
   const setTodo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -21,13 +24,22 @@ export default function TodoHeader() {
     e.preventDefault();
     const trimmedVal = todoVal.trim();
     if (!trimmedVal) {
-      setError("there is nothing!");
-      setTodoVal("");
+      setError('there is nothing!');
+      setTodoVal('');
       return;
     }
-    setError("");
-    onAddTodo(trimmedVal);
-    setTodoVal("");
+    const param = {
+      checked: false,
+      isEdit: false,
+      editContent: trimmedVal,
+      content: trimmedVal,
+      date: new Date(),
+    };
+
+    addTodo(param);
+    setError('');
+    // onAddTodo(trimmedVal);
+    setTodoVal('');
   };
 
   return (
@@ -38,16 +50,10 @@ export default function TodoHeader() {
         </span>
         <select
           className="border-customBlue border-2 ml-2 rounded-md px-1 font-semibold cursor-pointer"
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            setFilterVal(e.target.value)
-          }
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilterVal(e.target.value)}
         >
           {optionList.map((option, i) => (
-            <option
-              value={option}
-              key={i}
-              className="cursor-pointer font-semibold"
-            >
+            <option value={option} key={i} className="cursor-pointer font-semibold">
               {option}
             </option>
           ))}
@@ -57,10 +63,7 @@ export default function TodoHeader() {
       <div className="mt-5 text-3xl font-semibold text-center">
         <span>TO-DO</span>
       </div>
-      <form
-        className="flex justify-between items-center"
-        onSubmit={(e) => onAddTodoHandler(e)}
-      >
+      <form className="flex justify-between items-center" onSubmit={(e) => onAddTodoHandler(e)}>
         <input
           type="text"
           className="border-2 border-customBlue-80 w-[100%] rounded-md px-2"

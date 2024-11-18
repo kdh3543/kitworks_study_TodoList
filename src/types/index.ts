@@ -3,6 +3,8 @@ interface TodosType {
   checked: boolean;
   isEdit: boolean;
   editContent: string;
+  id?: string;
+  date?: Date;
 }
 
 export type { TodosType };
