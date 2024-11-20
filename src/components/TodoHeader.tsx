@@ -1,19 +1,24 @@
-import React, { useState } from 'react';
-import { FaCirclePlus } from 'react-icons/fa6';
+import React, { useEffect, useState } from 'react';
+import { FaCirclePlus, FaChevronLeft, FaChevronRight } from 'react-icons/fa6';
 import useTodoValStore from '../store/useTodoValStore';
-import useTodosStore from '../store/useTodosStore';
-
 import useFirebase from '../hooks/useFirebase';
+import useTodoCountStore from '../store/useTodoCountStore';
 
 export default function TodoHeader() {
-  const [error, setError] = useState('');
-
-  const { todoVal, setTodoVal, setFilterVal } = useTodoValStore();
-  const { onAddTodo } = useTodosStore();
-  const now = new Date();
+  const { totalCount } = useTodoCountStore();
+  const { todoVal, dateVal, setTodoVal, setFilterVal, setDateVal } = useTodoValStore();
   const { addTodo } = useFirebase();
 
+  const [error, setError] = useState('');
+  const [date, setDate] = useState(new Date());
+
+  const oneDay = 1 * 24 * 60 * 60 * 1000;
   const optionList = ['All', 'Complete', 'Not Complete'];
+
+  useEffect(() => {
+    const dateStr = date.getTime().toString();
+    setDateVal(dateStr);
+  }, [date]);
 
   const setTodo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -36,31 +41,50 @@ export default function TodoHeader() {
       date: new Date(),
     };
 
-    addTodo(param);
+    addTodo(param, dateVal);
     setError('');
-    // onAddTodo(trimmedVal);
     setTodoVal('');
   };
 
   return (
     <div className="h-[25%]">
-      <div className="flex justify-between">
-        <span className="text-xl font-semibold">
-          {now.getMonth() + 1}. {now.getDate()}
-        </span>
-        <select
-          className="border-customBlue border-2 ml-2 rounded-md px-1 font-semibold cursor-pointer"
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilterVal(e.target.value)}
-        >
-          {optionList.map((option, i) => (
-            <option value={option} key={i} className="cursor-pointer font-semibold">
-              {option}
-            </option>
-          ))}
-        </select>
+      <div>
+        <div className="flex justify-around items-center">
+          <button
+            className="active:scale-90"
+            onClick={() => setDate(new Date(date.getTime() - oneDay))}
+          >
+            <FaChevronLeft />
+          </button>
+          <span className="text-xl font-semibold">
+            {date.getFullYear()}. {date.getMonth() + 1}. {date.getDate()}
+          </span>
+          <button
+            className="active:scale-90"
+            onClick={() => setDate(new Date(date.getTime() + oneDay))}
+          >
+            <FaChevronRight />
+          </button>
+        </div>
+
+        <div className="mt-3 flex justify-end">
+          <select
+            className={`border-customBlue border-2 ml-2 rounded-md px-1 font-semibold  ${
+              totalCount === 0 ? 'cursor-not-allowed' : 'cursor-pointer'
+            }`}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilterVal(e.target.value)}
+            disabled={totalCount === 0}
+          >
+            {optionList.map((option, i) => (
+              <option value={option} key={i} className="cursor-pointer font-semibold">
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      <div className="mt-5 text-3xl font-semibold text-center">
+      <div className="mt-2 text-3xl font-semibold text-center">
         <span>TO-DO</span>
       </div>
       <form className="flex justify-between items-center" onSubmit={(e) => onAddTodoHandler(e)}>

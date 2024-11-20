@@ -1,13 +1,17 @@
 import { create } from 'zustand';
 
 interface countPropsType {
-  count: number;
-  setCount: (value: number) => void;
+  checkedCount: number;
+  totalCount: number;
+  setCheckedCount: (num: number) => void;
+  setTotalCount: (num: number) => void;
 }
 
 const useTodoCountStore = create<countPropsType>((set) => ({
-  count: 0,
-  setCount: (value: number) => set({ count: value }),
+  checkedCount: 0,
+  totalCount: 0,
+  setCheckedCount: (num: number) => set({ checkedCount: num }),
+  setTotalCount: (num: number) => set({ totalCount: num }),
 }));
 
 export default useTodoCountStore;

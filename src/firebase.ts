@@ -13,7 +13,5 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-// firestore 객체 생성
 const db = getFirestore(app);
-// firestore export
 export { db };

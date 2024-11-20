@@ -3,15 +3,15 @@ import useTodosStore from '../store/useTodosStore';
 import useTodoCountStore from '../store/useTodoCountStore';
 
 export default function TodoFooter() {
-  const { todos, onDeleteCompleted } = useTodosStore();
-  const { count } = useTodoCountStore();
+  const { onDeleteCompleted } = useTodosStore();
+  const { checkedCount, totalCount } = useTodoCountStore();
   return (
     <div className="h-[10%] flex items-end justify-between font-semibold">
-      <span>{count} Tasks</span>
+      <span>{totalCount - checkedCount} Tasks</span>
       <button
-        disabled={count === 0}
+        disabled={checkedCount === 0}
         className={`px-2 text-white rounded-lg  ${
-          count === 0
+          checkedCount === 0
             ? 'bg-gray-500 cursor-not-allowed'
             : 'bg-red-500 cursor-pointer active:scale-90'
         }`}

@@ -4,26 +4,27 @@ import { IoTrash } from 'react-icons/io5';
 import { FaRegCheckCircle } from 'react-icons/fa';
 import { FaRegCircleXmark } from 'react-icons/fa6';
 import { MdOutlineModeEditOutline } from 'react-icons/md';
-import useTodosStore from '../store/useTodosStore';
 import useTodoValStore from '../store/useTodoValStore';
-import { collection, doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import { TodosType } from '../types';
 import useFirebase from '../hooks/useFirebase';
 import useTodoCountStore from '../store/useTodoCountStore';
 
 export default function TodoContent() {
-  const { setCount } = useTodoCountStore();
-  const { filterVal } = useTodoValStore();
+  const { setCheckedCount } = useTodoCountStore();
+  const { dateVal, filterVal } = useTodoValStore();
   const { deleteTodo, changeTodoState, updateTodo, updateTodoEditContent } = useFirebase();
 
   const [todos, setTodos] = useState<TodosType[]>([]);
 
   useEffect(() => {
-    getDataByDB();
-  }, []);
+    if (todos) {
+      getData();
+    }
+  }, [dateVal]);
 
-  const getDataByDB = async () => {
+  const getData = () => {
     onSnapshot(collection(db, 'todo'), (todoList) => {
       const todoArr: TodosType[] = [];
 
@@ -39,7 +40,7 @@ export default function TodoContent() {
         };
         todoArr.push(param);
       });
-      setCount(todoArr.filter((v) => v.checked).length);
+      setCheckedCount(todoArr.filter((v) => v.checked).length);
       setTodos(todoArr);
     });
   };

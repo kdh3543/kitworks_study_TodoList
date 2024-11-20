@@ -3,8 +3,9 @@ import { db } from '../firebase';
 import { TodosType } from '../types';
 
 export default function useFirebase() {
-  const addTodo = (param: TodosType) => {
+  const addTodo = (param: TodosType, dateVal: string) => {
     addDoc(collection(db, 'todo'), param);
+    // addDoc(collection(db, 'todo', dateVal, 'list'), param);
   };
 
   const deleteTodo = async (id: string) => {
