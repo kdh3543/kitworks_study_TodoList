@@ -12,6 +12,12 @@ export default function useFirebase() {
     await deleteDoc(doc(db, 'todo', id));
   };
 
+  const deleteCompletedTodos = (list: TodosType[]) => {
+    list.forEach((v) => {
+      v.checked && deleteDoc(doc(db, 'todo', v.id || ''));
+    });
+  };
+
   const changeTodoState = (id: string, type: string, state: boolean) => {
     if (type === 'check') {
       updateDoc(doc(db, 'todo', id), {
@@ -43,5 +49,6 @@ export default function useFirebase() {
     changeTodoState,
     updateTodo,
     updateTodoEditContent,
+    deleteCompletedTodos,
   };
 }

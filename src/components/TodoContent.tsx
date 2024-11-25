@@ -10,13 +10,13 @@ import { db } from '../firebase';
 import { TodosType } from '../types';
 import useFirebase from '../hooks/useFirebase';
 import useTodoCountStore from '../store/useTodoCountStore';
+import useTodosStore from '../store/useTodosStore';
 
 export default function TodoContent() {
   const { setCheckedCount } = useTodoCountStore();
   const { dateVal, filterVal } = useTodoValStore();
   const { deleteTodo, changeTodoState, updateTodo, updateTodoEditContent } = useFirebase();
-
-  const [todos, setTodos] = useState<TodosType[]>([]);
+  const { setTodos, todos } = useTodosStore();
 
   useEffect(() => {
     if (todos) {
