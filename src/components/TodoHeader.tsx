@@ -16,7 +16,7 @@ export default function TodoHeader() {
   const optionList = ['All', 'Complete', 'Not Complete'];
 
   useEffect(() => {
-    const dateStr = date.getTime().toString();
+    const dateStr = date.getTime().toString().substring(0, 8) + '00000';
     setDateVal(dateStr);
   }, [date]);
 
@@ -40,7 +40,6 @@ export default function TodoHeader() {
       content: trimmedVal,
       date: new Date(),
     };
-
     addTodo(param, dateVal);
     setError('');
     setTodoVal('');

@@ -2,11 +2,14 @@ import React from 'react';
 import useTodosStore from '../store/useTodosStore';
 import useTodoCountStore from '../store/useTodoCountStore';
 import useFirebase from '../hooks/useFirebase';
+import useTodoValStore from '../store/useTodoValStore';
 
 export default function TodoFooter() {
   const { todos } = useTodosStore();
   const { checkedCount, totalCount } = useTodoCountStore();
   const { deleteCompletedTodos } = useFirebase();
+  const { dateVal } = useTodoValStore();
+
   return (
     <div className="h-[10%] flex items-end justify-between font-semibold">
       <span>{totalCount - checkedCount} Tasks</span>
@@ -17,7 +20,7 @@ export default function TodoFooter() {
             ? 'bg-gray-500 cursor-not-allowed'
             : 'bg-red-500 cursor-pointer active:scale-90'
         }`}
-        onClick={() => deleteCompletedTodos(todos)}
+        onClick={() => deleteCompletedTodos(todos, dateVal)}
       >
         Delete Completed
       </button>

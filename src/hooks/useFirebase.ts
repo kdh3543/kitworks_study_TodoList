@@ -1,44 +1,45 @@
-import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { TodosType } from '../types';
 
 export default function useFirebase() {
   const addTodo = (param: TodosType, dateVal: string) => {
-    addDoc(collection(db, 'todo'), param);
-    // addDoc(collection(db, 'todo', dateVal, 'list'), param);
+    const docRef = doc(collection(db, 'todo', dateVal, 'date'));
+    setDoc(docRef, param);
   };
 
-  const deleteTodo = async (id: string) => {
-    await deleteDoc(doc(db, 'todo', id));
+  const deleteTodo = async (id: string, dateVal: string) => {
+    await deleteDoc(doc(db, 'todo', dateVal, 'date', id));
   };
 
-  const deleteCompletedTodos = (list: TodosType[]) => {
+  const deleteCompletedTodos = (list: TodosType[], dateVal: string) => {
     list.forEach((v) => {
-      v.checked && deleteDoc(doc(db, 'todo', v.id || ''));
+      v.checked && deleteDoc(doc(db, 'todo', dateVal, 'date', v.id || ''));
     });
   };
 
-  const changeTodoState = (id: string, type: string, state: boolean) => {
+  const changeTodoState = (id: string, type: string, state: boolean, dateVal: string) => {
+    const docRef = doc(db, 'todo', dateVal, 'date', id);
     if (type === 'check') {
-      updateDoc(doc(db, 'todo', id), {
+      updateDoc(docRef, {
         checked: !state,
       });
     } else {
-      updateDoc(doc(db, 'todo', id), {
+      updateDoc(docRef, {
         isEdit: !state,
       });
     }
   };
 
-  const updateTodo = (id: string, editContent: string) => {
-    updateDoc(doc(db, 'todo', id), {
+  const updateTodo = (id: string, editContent: string, dateVal: string) => {
+    updateDoc(doc(db, 'todo', dateVal, 'date', id), {
       content: editContent,
       isEdit: false,
     });
   };
 
-  const updateTodoEditContent = (id: string, val: string) => {
-    updateDoc(doc(db, 'todo', id), {
+  const updateTodoEditContent = (id: string, val: string, dateVal: string) => {
+    updateDoc(doc(db, 'todo', dateVal, 'date', id), {
       editContent: val,
     });
   };

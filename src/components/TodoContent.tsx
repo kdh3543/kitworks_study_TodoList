@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { RiCheckboxBlankCircleLine, RiCheckboxCircleFill } from 'react-icons/ri';
 import { IoTrash } from 'react-icons/io5';
 import { FaRegCheckCircle } from 'react-icons/fa';
@@ -13,21 +13,21 @@ import useTodoCountStore from '../store/useTodoCountStore';
 import useTodosStore from '../store/useTodosStore';
 
 export default function TodoContent() {
-  const { setCheckedCount } = useTodoCountStore();
+  const { setCheckedCount, setTotalCount } = useTodoCountStore();
   const { dateVal, filterVal } = useTodoValStore();
   const { deleteTodo, changeTodoState, updateTodo, updateTodoEditContent } = useFirebase();
   const { setTodos, todos } = useTodosStore();
 
   useEffect(() => {
-    if (todos) {
+    if (todos && dateVal) {
+      setCheckedCount(0);
       getData();
     }
   }, [dateVal]);
 
   const getData = () => {
-    onSnapshot(collection(db, 'todo'), (todoList) => {
+    onSnapshot(collection(db, 'todo', dateVal, 'date'), (todoList) => {
       const todoArr: TodosType[] = [];
-
       todoList.forEach((list) => {
         const { checked, content, editContent, isEdit } = list.data();
         const param = {
@@ -40,6 +40,7 @@ export default function TodoContent() {
         };
         todoArr.push(param);
       });
+      setTotalCount(todoList.size);
       setCheckedCount(todoArr.filter((v) => v.checked).length);
       setTodos(todoArr);
     });
@@ -59,7 +60,7 @@ export default function TodoContent() {
   const onUpdateContentHandler = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
     const trimmedVal = e.target.value.trim();
     if (!trimmedVal) return;
-    updateTodoEditContent(id, trimmedVal);
+    updateTodoEditContent(id, trimmedVal, dateVal);
   };
 
   return (
@@ -82,12 +83,12 @@ export default function TodoContent() {
                     {checked ? (
                       <RiCheckboxCircleFill
                         className="w-[30px] h-[30px] text-customerPurple cursor-pointer"
-                        onClick={() => changeTodoState(id, 'check', checked)}
+                        onClick={() => changeTodoState(id, 'check', checked, dateVal)}
                       />
                     ) : (
                       <RiCheckboxBlankCircleLine
                         className="w-[30px] h-[30px] text-customerPurple cursor-pointer"
-                        onClick={() => changeTodoState(id, 'check', checked)}
+                        onClick={() => changeTodoState(id, 'check', checked, dateVal)}
                       />
                     )}
                   </div>
@@ -100,7 +101,7 @@ export default function TodoContent() {
                       defaultValue={editContent}
                       className="border-customBlue border-2 px-2 rounded-md w-[100%]"
                       onChange={(e) => onUpdateContentHandler(e, id)}
-                      onKeyDown={(e) => e.key === 'Enter' && updateTodo(id, editContent)}
+                      onKeyDown={(e) => e.key === 'Enter' && updateTodo(id, editContent, dateVal)}
                     />
                   ) : (
                     <span className={`text-xl ${checked && 'line-through'} `}>
@@ -110,24 +111,24 @@ export default function TodoContent() {
                 </div>
 
                 <div className="w-[10%] flex items-center justify-center">
-                  <IoTrash className="text-red-500 icon" onClick={() => deleteTodo(id)} />
+                  <IoTrash className="text-red-500 icon" onClick={() => deleteTodo(id, dateVal)} />
                 </div>
                 <div className="w-[20%] flex justify-around">
                   {isEdit ? (
                     <>
                       <FaRegCheckCircle
                         className="text-customerPurple icon"
-                        onClick={() => updateTodo(id, editContent)}
+                        onClick={() => updateTodo(id, editContent, dateVal)}
                       />
 
                       <FaRegCircleXmark
                         className="text-red-500 icon"
-                        onClick={() => changeTodoState(id, 'edit', isEdit)}
+                        onClick={() => changeTodoState(id, 'edit', isEdit, dateVal)}
                       />
                     </>
                   ) : (
                     <MdOutlineModeEditOutline
-                      onClick={() => changeTodoState(id, 'edit', isEdit)}
+                      onClick={() => changeTodoState(id, 'edit', isEdit, dateVal)}
                       className={'icon'}
                     />
                   )}
