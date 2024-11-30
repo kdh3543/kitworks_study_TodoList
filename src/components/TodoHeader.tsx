@@ -16,7 +16,7 @@ export default function TodoHeader() {
   const optionList = ['All', 'Complete', 'Not Complete'];
 
   useEffect(() => {
-    const dateStr = date.getTime().toString().substring(0, 8) + '00000';
+    const dateStr = '' + date.getFullYear() + (date.getMonth() + 1) + date.getDate();
     setDateVal(dateStr);
   }, [date]);
 
